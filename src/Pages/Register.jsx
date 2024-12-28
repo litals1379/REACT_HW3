@@ -29,30 +29,48 @@ export default function Register() {
       setFormData({ ...formData, [name]: value });
     }
   };
+
+  console.log(formData);
   const validate = () => {
     const newErrors = {};
     const usernameRegex = /^[a-zA-Z]{1,60}$/;
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,12}$/;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com$/;
 
-    if (!usernameRegex.test(formData.username)) {
+    if (!formData.username) {
+      newErrors.username = 'שם משתמש הוא שדה חובה.';
+    }
+    else if (!usernameRegex.test(formData.username)) {
       newErrors.username = 'שם משתמש יכול להכיל רק אותיות (עד 60 תווים).';
     }
-    if (!passwordRegex.test(formData.password)) {
+    if (!formData.password) {
+      newErrors.password = 'סיסמה היא שדה חובה.';
+    }
+    else if (!passwordRegex.test(formData.password)) {
       newErrors.password = 'סיסמה חייבת להכיל 7-12 תווים, כולל אות גדולה, מספר ותו מיוחד.';
     }
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'סיסמאות אינן תואמות.';
     }
-    if (!emailRegex.test(formData.email)) {
+    if (!formData.email) {
+      newErrors.email = 'אימייל הוא שדה חובה.';
+    }
+    else if (!emailRegex.test(formData.email)) {
       newErrors.email = 'כתובת אימייל לא תקינה.';
     }
     if (formData.profileImage && !/\.(jpg|jpeg)$/i.test(formData.profileImage.name)) {
       newErrors.profileImage = 'ניתן להעלות תמונה בפורמט .jpg או .jpeg בלבד.';
     }
-    if (calculateAge(formData.birthDate) < 18) {
+    if (!formData.birthDate) {
+      newErrors.birthDate = 'תאריך לידה הוא שדה חובה.';
+    }
+    else if (calculateAge(formData.birthDate) < 18) {
       newErrors.birthDate = 'גיל חייב להיות לפחות 18.';
     }
+    else if (calculateAge(formData.birthDate) > 120) {
+      newErrors.birthDate = 'גיל חייב להיות עד 120.';
+    }
+
     if (!formData.firstName) {
       newErrors.firstName = 'שם פרטי הוא שדה חובה.';
     }
@@ -67,6 +85,9 @@ export default function Register() {
     }
     if (!formData.street_number) {
       newErrors.street_number = 'מספר רחוב הוא שדה חובה.';
+    }
+    else if (Number(formData.street_number) < 1) {
+      newErrors.street_number = 'מספר רחוב חייב להיות גדול מ-0.';
     }
 
     setErrors(newErrors);
@@ -90,7 +111,7 @@ export default function Register() {
 
   const registerUser = () => {
     if (!validate()) {
-      return; 
+      return;
     }
 
     const users = JSON.parse(localStorage.getItem('users')) || [];
@@ -231,12 +252,12 @@ export default function Register() {
         <input
           type="number"
           name="street_number"
-          value={formData.street}
+          value={formData.street_number}
           onChange={handleChange}
           placeholder="הזן מספר רחוב"
           className="form-control"
         />
-        {errors.street && <div className="text-danger">{errors.street}</div>}
+        {errors.street_number && <div className="text-danger">{errors.street_number}</div>}
 
         <label>תמונת פרופיל:</label>
         <input
