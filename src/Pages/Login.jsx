@@ -23,6 +23,10 @@ export default function Login() {
     }
   };
 
+  const RegisterLink = () =>{
+    navigate('/register');
+  };
+
   return (
     <div className="container mt-5" style={{ maxWidth: '500px', direction: 'rtl' }}>
       <h2>כניסה</h2>
@@ -32,7 +36,8 @@ export default function Login() {
       <label>סיסמה:</label>
       <input type="password" name="password" onChange={handleChange} placeholder="הזן סיסמה (7-12 תווים)" className="form-control"/>
       
-      <button onClick={loginUser} className="btn btn-primary mt-3">כניסה</button>
+      <button onClick={loginUser} className="btn btn-primary mt-3">כניסה</button> <br/>
+      <button onClick={RegisterLink}  >עוד לא נירשמת? הירשם עכשיו</button>
     </div>
   );
 }

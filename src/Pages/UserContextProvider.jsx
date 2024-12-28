@@ -15,10 +15,8 @@ export default function UserContextProvider(props) {
     alert("המשתמש הוסר בהצלחה!");
   };
 
-  const EditUser = (updatedUserData) => {
-    const updatedUsers = users.map(user =>
-      user.email === updatedUserData.email ? updatedUserData : user
-    );
+  const EditUser = (email) => {
+    const updatedUsers = users.filter(user => user.email !== email);
     setUsers(updatedUsers);
     localStorage.setItem('users', JSON.stringify(updatedUsers));
     alert("המשתמש עודכן בהצלחה!");
