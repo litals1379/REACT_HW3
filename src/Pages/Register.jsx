@@ -15,6 +15,7 @@ export default function Register() {
     birthDate: '',
     city: '',
     street: '',
+    street_number: '',
     profileImage: null,
   });
   const [errors, setErrors] = useState({});
@@ -63,6 +64,9 @@ export default function Register() {
     }
     if (!formData.street) {
       newErrors.street = 'רחוב הוא שדה חובה.';
+    }
+    if (!formData.street_number) {
+      newErrors.street_number = 'מספר רחוב הוא שדה חובה.';
     }
 
     setErrors(newErrors);
@@ -219,6 +223,17 @@ export default function Register() {
           value={formData.street}
           onChange={handleChange}
           placeholder="הזן שם רחוב"
+          className="form-control"
+        />
+        {errors.street && <div className="text-danger">{errors.street}</div>}
+
+        <label>מספר רחוב:</label>
+        <input
+          type="number"
+          name="street_number"
+          value={formData.street}
+          onChange={handleChange}
+          placeholder="הזן מספר רחוב"
           className="form-control"
         />
         {errors.street && <div className="text-danger">{errors.street}</div>}

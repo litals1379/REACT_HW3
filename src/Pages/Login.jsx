@@ -3,16 +3,16 @@ import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [userDetails, setUserDetails] = useState({ username: '', password: '' });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCredentials({ ...credentials, [name]: value });
+    setUserDetails({ ...userDetails, [name]: value });
   };
 
   const loginUser = () => {
     const users = JSON.parse(localStorage.getItem('users')) || [];
-    const user = users.find(user => user.username === credentials.username && user.password === credentials.password);
+    const user = users.find(user => user.username === userDetails.username && user.password === userDetails.password);
 
     if (user) {
       sessionStorage.setItem('loggedUser', JSON.stringify(user));
