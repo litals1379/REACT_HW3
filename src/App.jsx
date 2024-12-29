@@ -9,13 +9,24 @@ import SystemAdmin from './Pages/SystemAdmin';
 import UserContextProvider from './Pages/UserContextProvider';
 
 function App() {
+  const onlineUser = sessionStorage.getItem('loggedUser');
+
   return (
     <>
+    
+      <Link to= "/register">הרשמה</Link>|
+      <Link to= "/">כניסה</Link>|
+      {onlineUser && onlineUser.role === 'admin' ? (
+        <>
+      <Link to="/admin">מנהל מערכת</Link>
+      </>
+      ) : 
+      (
+      <>
+      <Link to= "/profile">פרופיל</Link>|
+      </>
+  )}
 
-        <Link to= "/">כניסה</Link>|
-        <Link to= "/register">הרשמה</Link>|
-        <Link to= "/profile">פרופיל</Link>|
-        <Link to="/admin">מנהל מערכת</Link>
         <div className="card">
         <Routes>
             <Route path='/' element = {<Login/>}/>
@@ -23,7 +34,9 @@ function App() {
             <Route path='/profile' element = {<Profile/>}/>
             <Route path="/edit-details" element={<EditDetails />} />
             <Route path="/admin" element={
+              <UserContextProvider>
             <SystemAdmin />
+            </UserContextProvider>
           } />
         </Routes>
         

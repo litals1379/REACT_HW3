@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
@@ -10,6 +10,24 @@ export default function Login() {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+  const addAdminIfNotExists = () => {
+    // const users = JSON.parse(localStorage.getItem('users')) || [];
+    const adminExists = users.some(user => user.username === 'admin');
+    if (!adminExists) {
+      const adminUser = {
+        username: 'admin',
+        password: 'ad12343211ad',
+        role: 'admin'
+      };
+      users.push(adminUser);
+      localStorage.setItem('users', JSON.stringify(users));
+    }
+  };
+   
+      
+      useEffect(() => {
+        addAdminIfNotExists();
+      }, []);
 
   const validate = () => {
     const newErrors = {};
@@ -50,6 +68,8 @@ export default function Login() {
     setErrors(newErrors);
     return isValid;
   };
+
+ 
 
   const loginUser = () => {
     if (!validate()) {

@@ -5,20 +5,21 @@ import { loadImageFromDB } from "../DB/indexedDB";  // ייבוא פונקציי
 export default function Profile() {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const userData = state || JSON.parse(sessionStorage.getItem('loggedUser'));
+  const userData =  JSON.parse(sessionStorage.getItem('loggedUser'));
   const [profileImage, setProfileImage] = useState(null);
 
-  useEffect(() => {
-    if (userData) {
-      loadImageFromDB(userData.email)
-        .then(image => {
-          if (image) {
-            setProfileImage(image);
-          }
-        });
-    }
-  }, [userData]);
+  // useEffect(() => {
+  //   if (userData) {
+  //     loadImageFromDB(userData.email)
+  //       .then(image => {
+  //         if (image) {
+  //           setProfileImage(image);
+  //         }
+  //       });
+  //   }
+  // }, [userData]);
 
+  console.log(userData);
   const editDetails = () => {
     navigate('/edit-details', { state: userData });
   };
@@ -61,7 +62,7 @@ export default function Profile() {
             <i className="fa fa-envelope me-2"></i>{userData.email}
           </p>
           <p>
-            <i className="fa fa-map-marker me-2"></i>{userData.address || 'לא צוינה כתובת'}
+          <i className="fa fa-map-marker me-2"></i>{(userData.street + " " + userData.street_number + " ," + userData.city) || 'לא צוינה כתובת'}
           </p>
           <p>
             <i className="fa fa-calendar me-2"></i>{userData.birthDate || 'לא צויין תאריך'}

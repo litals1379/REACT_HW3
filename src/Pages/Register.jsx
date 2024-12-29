@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import CitiesData from '../Data/Cities.json';
-import { UserContext } from './UserContextProvider';
+// import { UserContext } from './UserContextProvider';
 
 const cities = [];
 CitiesData.map((city) => {
@@ -13,11 +13,11 @@ CitiesData.map((city) => {
 
 export default function Register() {
   const navigate = useNavigate();
-  const {addUser} = useContext(UserContext);
+  // const {addUser} = useContext(UserContext);
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false); // Toggle state
   const [filteredCities, setFilteredCities] = useState([]);
-
+  const users = JSON.parse(localStorage.getItem('users')) || [];
   // const [selectedCity, setSelectedCity] = useState(''); // Dropdown state
 
   const [formData, setFormData] = useState({
@@ -32,6 +32,7 @@ export default function Register() {
     street: '',
     street_number: '',
     profileImage: null,
+    role: 'user'
   });
   
  
@@ -189,7 +190,7 @@ console.log(formData);
     if (!validate()) {
       return;
     }
-    addUser(formData);
+    localStorage.setItem('users', JSON.stringify([...users,formData]));
     alert('נרשמת בהצלחה!');
     navigate('/', { state: formData });
   };

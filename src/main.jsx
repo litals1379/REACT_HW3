@@ -9,10 +9,8 @@ createRoot(document.getElementById('root')).render(
 
   <BrowserRouter>
 
-  <StrictMode>
-  <UserContextProvider>
+  <StrictMode> 
     <App />
-  </UserContextProvider>
   </StrictMode>
   </BrowserRouter>
 
