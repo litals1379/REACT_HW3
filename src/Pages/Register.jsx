@@ -68,14 +68,14 @@ console.log(formData);
     let isValid=true;
 
     //validate user name
-    if (!formData.userName) {
-      newErrors.userName = 'שם משתמש הוא שדה חובה.';
+    if (!formData.username) {
+      newErrors.username = 'שם משתמש הוא שדה חובה.';
       isValid=false;
-  } else if (formData.userName.length > 60) {
+  } else if (formData.username.length > 60) {
       newErrors.userName = 'שם משתמש חייב להכיל עד 60 תווים';
       isValid=false;
-  } else if (!usernameRegex.test(formData.userName)) {
-    newErrors.userName = 'שם משתמש חייב להכיל אותיות באנגלית, מספרים ותווים מיוחדים.';
+  } else if (!usernameRegex.test(formData.username)) {
+    newErrors.username = 'שם משתמש חייב להכיל אותיות באנגלית, מספרים ותווים מיוחדים.';
     isValid=false;
   }
    
@@ -164,9 +164,8 @@ console.log(formData);
       newErrors.street_number = 'מספר רחוב חייב להיות גדול מ-0.';
       isValid=false;
     }
-    console.log(isValid);
     setErrors(newErrors);
-    return true;
+    return isValid;
   };
 
   const calculateAge = (birthDate) => {
@@ -188,7 +187,6 @@ console.log(formData);
   const registerUser = () => {
     console.log("inRegister handle func");
     if (!validate()) {
-      alert('אחד או יותר מהשדות אינם תקינים.');
       return;
     }
     addUser(formData);
