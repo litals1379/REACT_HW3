@@ -37,6 +37,15 @@ export default function Profile({ setIsLoggedIn }) {
     navigate('/', { replace: true });
   };
 
+  const game = () => {
+    const url = userData.favorite_game;
+    if (url) {
+      window.location.href = url;
+    } else {
+      alert('לא נמצא קישור למשחק');
+    }
+  };
+  
   useEffect(() => {
     if (!userData) {
       navigate('/', { replace: true });
@@ -82,11 +91,12 @@ export default function Profile({ setIsLoggedIn }) {
           <p>
             <i className="fa fa-calendar me-2"></i>{userData.birthDate || 'לא צויין תאריך'}
           </p>
+
           <div className="d-flex justify-content-center mt-4">
             <button onClick={editDetails} className="btn btn-secondary me-2">
               עדכון פרטים
             </button>
-            <button className="btn btn-primary me-2">
+            <button onClick={game} className="btn btn-primary me-2">
               למשחק
             </button>
             <button onClick={logoutUser} className="btn btn-danger">

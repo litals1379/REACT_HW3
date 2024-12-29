@@ -315,6 +315,15 @@ export default function Register() {
           <img src={formData.profileImage} alt="Profile Image" className="img-thumbnail" /> 
         )}
 
+        <label className="mt-3">קישור למשחק אונליין אהוב:</label>
+          <input
+            type="url"
+            value={userData.LinkToFavoriteGame}
+            readOnly
+            className="form-control mt-2"
+            style={{ maxWidth: '400px' }}
+          />
+          
         <button type="button" onClick={registerUser} className="btn btn-primary mt-3">
           הרשמה
         </button>
