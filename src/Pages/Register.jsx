@@ -65,6 +65,7 @@ export default function Register() {
     const usernameRegex = /^[a-zA-Z]{1,60}$/;
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,12}$/;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com$/;
+    const urlRegex = /^(https?:\/\/)([a-zA-Z0-9.-]+)(\.[a-zA-Z]{2,})(:[0-9]{1,5})?(\/[^\s]*)?$/;
 
     if (!formData.username) {
       newErrors.username = 'שם משתמש הוא שדה חובה.';
@@ -90,6 +91,12 @@ export default function Register() {
       newErrors.birthDate = 'גיל חייב להיות לפחות 18.';
     } else if (calculateAge(formData.birthDate) > 120) {
       newErrors.birthDate = 'גיל חייב להיות עד 120.';
+    }
+
+    if (!formData.favorite_game) {
+      newErrors.favorite_game = 'משחק הוא שדה חובה.';
+    } else if (!urlRegex.test(formData.favorite_game)) {
+      newErrors.favorite_game = 'קישור למשחק לא תקין!';
     }
 
     if (!formData.firstName) {
@@ -162,7 +169,7 @@ export default function Register() {
   };
 
   return (
-    <div className="container mt-5" style={{ maxWidth: '500px', direction: 'rtl' }}>
+    <div className="container mt-4" style={{ maxWidth: '500px', direction: 'rtl' }}>
       <h2>הרשמה</h2>
       <form>
         <label>שם משתמש:</label>
@@ -327,6 +334,7 @@ export default function Register() {
             className="form-control mt-2"
             // style={{ maxWidth: '400px' }}
           />
+          {errors.favorite_game && <div className="text-danger">{errors.favorite_game}</div>}
           
         <button type="button" onClick={registerUser} className="btn btn-primary mt-3">
           הרשמה

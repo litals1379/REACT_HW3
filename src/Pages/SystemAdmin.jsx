@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { UserContext } from './UserContextProvider';
 
 export default function SystemAdmin() {
@@ -12,6 +12,28 @@ export default function SystemAdmin() {
     address: '',
     email: ''
   });
+  const [avatars, setAvatars] = useState({}); // Store avatars keyed by email
+
+  // Load avatars from local storage
+  useEffect(() => {
+    const loadAvatars = () => {
+      const avatarsMap = {};
+      users.forEach(user => {
+        const image = loadImageFromLocalStorage(user.email);
+        if (image) {
+          avatarsMap[user.email] = image;
+        }
+      });
+      setAvatars(avatarsMap);
+    };
+
+    loadAvatars();
+  }, [users]);
+
+  const loadImageFromLocalStorage = (email) => {
+    const imageData = localStorage.getItem(`profileImage_${email}`);
+    return imageData ? `data:image/jpeg;base64,${imageData}` : null;
+  };
 
   const handleEditClick = (user) => {
     setEditingUser(user);
@@ -19,7 +41,7 @@ export default function SystemAdmin() {
       firstName: user.firstName,
       lastName: user.lastName,
       birthDate: user.birthDate,
-      address: (user.street + " " + user.street_number + " ," + user.city),
+      address: `${user.street} ${user.street_number}, ${user.city}`,
       email: user.email
     });
   };
@@ -30,8 +52,8 @@ export default function SystemAdmin() {
   };
 
   const handleSaveChanges = () => {
-    EditUser(updatedUserData); 
-    setEditingUser(null);  
+    EditUser(updatedUserData);
+    setEditingUser(null);
   };
 
   return (
@@ -39,7 +61,7 @@ export default function SystemAdmin() {
       <table className="table table-striped mt-3 text-center">
         <thead>
           <tr>
-            <th>שם משתמש</th>
+            <th>תמונה</th>
             <th>שם מלא</th>
             <th>תאריך לידה</th>
             <th>כתובת</th>
@@ -53,16 +75,16 @@ export default function SystemAdmin() {
               <tr key={index}>
                 <td>
                   <img
-                    src={user.avatar || '/default-avatar.png'}
+                    src={avatars[user.email] || '/default-avatar.png'}
                     alt="Avatar"
                     className="rounded-circle"
                     width="40"
                     height="40"
                   />
                 </td>
-                <td>{(user.firstName + " " + user.lastName)}</td>
+                <td>{`${user.firstName} ${user.lastName}`}</td>
                 <td>{user.birthDate}</td>
-                <td>{(user.street + " " + user.street_number + " ," + user.city)}</td>
+                <td>{`${user.street} ${user.street_number}, ${user.city}`}</td>
                 <td>
                   <a href={`mailto:${user.email}`}>{user.email}</a>
                 </td>
@@ -92,7 +114,7 @@ export default function SystemAdmin() {
 
       {/* Edit user modal */}
       {editingUser && (
-        <div className="modal show" style={{ display: 'block' }} tabindex="-1">
+        <div className="modal show" style={{ display: 'block' }} tabIndex="-1">
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
@@ -120,7 +142,6 @@ export default function SystemAdmin() {
                   onChange={handleInputChange}
                   className="form-control"
                 />
-
                 <label>תאריך לידה</label>
                 <input
                   type="date"
@@ -129,7 +150,6 @@ export default function SystemAdmin() {
                   onChange={handleInputChange}
                   className="form-control"
                 />
-
                 <label>כתובת</label>
                 <input
                   type="text"
@@ -138,7 +158,6 @@ export default function SystemAdmin() {
                   onChange={handleInputChange}
                   className="form-control"
                 />
-
                 <label>אימייל</label>
                 <input
                   type="email"
