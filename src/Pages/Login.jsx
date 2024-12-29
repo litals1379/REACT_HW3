@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function Login() {
+export default function Login({ setIsLoggedIn }) {
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState({ username: '', password: '' });
 
-  // הוספת משתמש admin ל-localStorage אם הוא לא קיים
   const addAdminIfNotExists = () => {
     const users = JSON.parse(localStorage.getItem('users')) || [];
     const adminExists = users.some(user => user.username === 'admin');
@@ -14,30 +13,40 @@ export default function Login() {
       const adminUser = {
         username: 'admin',
         password: 'ad12343211ad',
-        role: 'admin'
+        role: 'admin',
+        email: 'admin@admin.com',
+        firstName: '',
+        lastName: '',
+        birthDate: '',
+        city: '',
+        street: '',
+        street_number: '',
+        profileImage: null,
       };
       users.push(adminUser);
       localStorage.setItem('users', JSON.stringify(users));
     }
   };
 
-  // עדכון ערכי השדות
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserDetails({ ...userDetails, [name]: value });
   };
 
-  // התחברות והפניה לפי סוג משתמש
   const loginUser = () => {
     const users = JSON.parse(localStorage.getItem('users')) || [];
-    const user = users.find(user => user.username === userDetails.username && user.password === userDetails.password);
+    const user = users.find(user => 
+      user.username === userDetails.username && 
+      user.password === userDetails.password
+    );
 
     if (user) {
       sessionStorage.setItem('loggedUser', JSON.stringify(user));
+      // Update the login state in parent component
+      setIsLoggedIn(true);
       alert("התחברת בהצלחה!");
 
-      // ניתוב לפי סוג המשתמש (admin או user רגיל)
-      if (user.username === 'admin') {
+      if (user.role === 'admin') {
         navigate('/admin');
       } else {
         navigate('/profile');
@@ -47,12 +56,10 @@ export default function Login() {
     }
   };
 
-  // ניתוב לדף הרשמה
   const RegisterLink = () => {
     navigate('/register');
   };
 
-  // הוספת admin בעת טעינת הקומפוננטה
   useEffect(() => {
     addAdminIfNotExists();
   }, []);
@@ -78,8 +85,11 @@ export default function Login() {
         className="form-control"
       />
       
-      <button onClick={loginUser} className="btn btn-primary mt-3">כניסה</button> <br/>
-      <button onClick={RegisterLink} className="btn btn-link">עוד לא נרשמת? הירשם עכשיו</button>
+      <button onClick={loginUser} className="btn btn-primary mt-3">כניסה</button>
+      <br/>
+      <button onClick={RegisterLink} className="btn btn-link">
+        עוד לא נרשמת? הירשם עכשיו
+      </button>
     </div>
   );
 }

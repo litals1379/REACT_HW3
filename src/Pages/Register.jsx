@@ -16,6 +16,7 @@ export default function Register() {
     city: '',
     street: '',
     street_number: '',
+    role: 'user',
     profileImage: null,
   });
   const [errors, setErrors] = useState({});

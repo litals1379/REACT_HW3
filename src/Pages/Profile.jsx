@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { loadImageFromDB } from "../DB/indexedDB";  // ייבוא פונקציית טעינת תמונה
+import { loadImageFromDB } from "../DB/indexedDB";
 
-export default function Profile() {
+export default function Profile({ setIsLoggedIn }) {
   const { state } = useLocation();
   const navigate = useNavigate();
   const userData = state || JSON.parse(sessionStorage.getItem('loggedUser'));
@@ -24,9 +24,20 @@ export default function Profile() {
   };
 
   const logoutUser = () => {
+    // Remove user data from sessionStorage
     sessionStorage.removeItem('loggedUser');
-    navigate('/');
+    // Update login state in App component
+    setIsLoggedIn(false);
+    // Navigate to login page
+    navigate('/', { replace: true });
   };
+
+  // Redirect to login if no user data
+  useEffect(() => {
+    if (!userData) {
+      navigate('/', { replace: true });
+    }
+  }, [userData, navigate]);
 
   return (
     <div className="container mt-5 d-flex justify-content-center">
@@ -42,7 +53,7 @@ export default function Profile() {
                 borderRadius: '50%',
                 objectFit: 'cover'
               }}
-              onError={(e) => e.target.src = '/defaultImageUrl.jpg'} // תמונה חלופית
+              onError={(e) => e.target.src = '/defaultImageUrl.jpg'}
             />
           ) : (
             <img
@@ -61,7 +72,8 @@ export default function Profile() {
             <i className="fa fa-envelope me-2"></i>{userData.email}
           </p>
           <p>
-            <i className="fa fa-map-marker me-2"></i>{userData.address || 'לא צוינה כתובת'}
+            <i className="fa fa-map-marker me-2"></i>
+            {(userData.street + " " + userData.street_number + " ," + userData.city) || 'לא צוינה כתובת'}
           </p>
           <p>
             <i className="fa fa-calendar me-2"></i>{userData.birthDate || 'לא צויין תאריך'}
