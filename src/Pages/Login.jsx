@@ -51,8 +51,7 @@ export default function Login({ setIsLoggedIn }) {
       newErrors.userName = 'שם משתמש חייב להכיל אותיות באנגלית, מספרים ותווים מיוחדים.';
       isValid = false;
     }
-    
-     //validate password
+
      if (!formData.password) {
       newErrors.password = 'סיסמה היא שדה חובה.';
       isValid=false;
@@ -89,7 +88,6 @@ export default function Login({ setIsLoggedIn }) {
 
     if (user) {
       sessionStorage.setItem('loggedUser', JSON.stringify(user));
-      // Update the login state in parent component
       setIsLoggedIn(true);
       alert("התחברת בהצלחה!");
 
@@ -102,31 +100,6 @@ export default function Login({ setIsLoggedIn }) {
       alert("שם משתמש או סיסמה שגויים!");
     }
   };
-
-
-  // const loginUser = () => {
-  //   const users = JSON.parse(localStorage.getItem('users')) || [];
-  //   const user = users.find(user => 
-  //     user.username === userDetails.username && 
-  //     user.password === userDetails.password
-  //   );
-
-  //   if (user) {
-  //     sessionStorage.setItem('loggedUser', JSON.stringify(user));
-  //     // Update the login state in parent component
-  //     setIsLoggedIn(true);
-  //     alert("התחברת בהצלחה!");
-
-  //     if (user.role === 'admin') {
-  //       navigate('/admin');
-  //     } else {
-  //       navigate('/profile');
-  //     }
-  //   } else {
-  //     alert("שם משתמש או סיסמה שגויים!");
-  //   }
-  // };
-
   const RegisterLink = () => {
     navigate('/register');
   };
@@ -145,7 +118,7 @@ export default function Login({ setIsLoggedIn }) {
       <input type="password" name="password" onChange={handleChange} placeholder="הזן סיסמה (7-12 תווים)" className="form-control" />
       {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
       <button onClick={loginUser} className="btn btn-primary mt-3">כניסה</button> <br />
-      <button onClick={RegisterLink}  >עוד לא נירשמת? הירשם עכשיו</button>
+      <button onClick={RegisterLink} >עוד לא נירשמת? הירשם עכשיו</button>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { loadImageFromDB } from "../DB/indexedDB";
+import React, { useRef } from 'react';
 
 export default function Profile({ setIsLoggedIn }) {
   const { state } = useLocation();
@@ -24,15 +25,20 @@ export default function Profile({ setIsLoggedIn }) {
   };
 
   const logoutUser = () => {
-    // Remove user data from sessionStorage
     sessionStorage.removeItem('loggedUser');
-    // Update login state in App component
     setIsLoggedIn(false);
-    // Navigate to login page
     navigate('/', { replace: true });
   };
 
-  // Redirect to login if no user data
+  const game = () => {
+    const url = userData.LinkToFavoriteGame;
+    if (url) {
+      window.location.href = url;
+    } else {
+      alert('לא נמצא קישור למשחק');
+    }
+  };
+  
   useEffect(() => {
     if (!userData) {
       navigate('/', { replace: true });
@@ -78,11 +84,12 @@ export default function Profile({ setIsLoggedIn }) {
           <p>
             <i className="fa fa-calendar me-2"></i>{userData.birthDate || 'לא צויין תאריך'}
           </p>
+
           <div className="d-flex justify-content-center mt-4">
             <button onClick={editDetails} className="btn btn-secondary me-2">
               עדכון פרטים
             </button>
-            <button className="btn btn-primary me-2">
+            <button onClick={game} className="btn btn-primary me-2">
               למשחק
             </button>
             <button onClick={logoutUser} className="btn btn-danger">
