@@ -6,7 +6,8 @@ export default function SystemAdmin() {
 
   const [editingUser, setEditingUser] = useState(null);
   const [updatedUserData, setUpdatedUserData] = useState({
-    fullName: '',
+    firstName: '',
+    lastName: '',
     birthDate: '',
     address: '',
     email: ''
@@ -15,9 +16,10 @@ export default function SystemAdmin() {
   const handleEditClick = (user) => {
     setEditingUser(user);
     setUpdatedUserData({
-      fullName: user.fullName,
+      firstName: user.firstName,
+      lastName: user.lastName,
       birthDate: user.birthDate,
-      address: user.address,
+      address: (user.street + " " + user.street_number + " ," + user.city),
       email: user.email
     });
   };
@@ -33,7 +35,7 @@ export default function SystemAdmin() {
   };
 
   return (
-    <div className="container mt-5" style={{ maxWidth: '500px', direction: 'rtl' }}>
+    <div className="container mt-5" style={{ maxWidth: '700px', direction: 'rtl' }}>
       <table className="table table-striped mt-3 text-center">
         <thead>
           <tr>
@@ -58,9 +60,9 @@ export default function SystemAdmin() {
                     height="40"
                   />
                 </td>
-                <td>{user.fullName}</td>
+                <td>{(user.firstName + " " + user.lastName)}</td>
                 <td>{user.birthDate}</td>
-                <td>{user.address}</td>
+                <td>{(user.street + " " + user.street_number + " ," + user.city)}</td>
                 <td>
                   <a href={`mailto:${user.email}`}>{user.email}</a>
                 </td>
@@ -102,11 +104,19 @@ export default function SystemAdmin() {
                 ></button>
               </div>
               <div className="modal-body">
-                <label>שם מלא</label>
+                <label>שם פרטי</label>
                 <input
                   type="text"
-                  name="fullName"
-                  value={updatedUserData.fullName}
+                  name="firstName"
+                  value={updatedUserData.firstName}
+                  onChange={handleInputChange}
+                  className="form-control"
+                />
+                <label>שם משפחה</label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={updatedUserData.lastName}
                   onChange={handleInputChange}
                   className="form-control"
                 />

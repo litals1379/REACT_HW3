@@ -7,7 +7,6 @@ import Profile from './Pages/Profile'
 import EditDetails from './Pages/EditDetails';
 import SystemAdmin from './Pages/SystemAdmin';
 import UserContextProvider from './Pages/UserContextProvider';
-import ProtectedRoute from './Pages/ProtectedRoute'
 
 
 function App() {

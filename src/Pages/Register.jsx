@@ -2,6 +2,12 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import CitiesData from '../assets/cities.json';
+
+const cities = [];
+CitiesData.map((city) => {
+  cities.push(city.name);
+});
 
 export default function Register() {
   const navigate = useNavigate();
@@ -20,6 +26,7 @@ export default function Register() {
     profileImage: null,
   });
   const [errors, setErrors] = useState({});
+  const [filteredCities, setFilteredCities] = useState([]);
   const [showPassword, setShowPassword] = useState(false); // Toggle state
 
   const handleChange = (e) => {
@@ -28,6 +35,18 @@ export default function Register() {
       setFormData({ ...formData, profileImage: files[0] });
     } else {
       setFormData({ ...formData, [name]: value });
+    }
+  };
+
+  const handleCityChange = (e) => {
+    const value = e.target.value;
+    setFormData({ ...formData, city: value });
+
+    if (value) {
+      const filtered = cities.filter(city => city.includes(value));
+      setFilteredCities(filtered);
+    } else {
+      setFilteredCities([]);
     }
   };
 
@@ -229,13 +248,25 @@ export default function Register() {
 
         <label>עיר:</label>
         <input
-          type="text"
-          name="city"
-          value={formData.city}
-          onChange={handleChange}
-          placeholder="הזן עיר מגורים"
-          className="form-control"
-        />
+        type="text"
+        name="city"
+        value={formData.city}
+        onChange={handleCityChange}
+        placeholder="הזן עיר מגורים"
+        className="form-control"
+      />
+      {filteredCities.length > 0 && (
+        <ul className="autocomplete-list" style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
+          {filteredCities.map((city, index) => (
+            <li key={index} onClick={() => setFormData({ ...formData, city })}
+               style={{ cursor: 'pointer', padding: '5px', backgroundColor: '#fff' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = '#f0f0f0'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = '#fff'}>
+              {city}
+            </li>
+          ))}
+        </ul>
+      )}
         {errors.city && <div className="text-danger">{errors.city}</div>}
 
         <label>רחוב:</label>
