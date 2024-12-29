@@ -24,6 +24,7 @@ export default function Register() {
     street_number: '',
     role: 'user',
     profileImage: null, // Store the image as a data URL
+    favorite_game: '',
   });
   const [errors, setErrors] = useState({});
   const [filteredCities, setFilteredCities] = useState([]);
@@ -318,10 +319,13 @@ export default function Register() {
         <label className="mt-3">קישור למשחק אונליין אהוב:</label>
           <input
             type="url"
-            value={userData.LinkToFavoriteGame}
-            readOnly
+            name="favorite_game"
+            value={formData.favorite_game}
+            onChange={handleChange}
+            placeholder='הזן משחק אהוב'
+            // readOnly
             className="form-control mt-2"
-            style={{ maxWidth: '400px' }}
+            // style={{ maxWidth: '400px' }}
           />
           
         <button type="button" onClick={registerUser} className="btn btn-primary mt-3">
