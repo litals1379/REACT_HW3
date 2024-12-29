@@ -7,7 +7,6 @@ export default function UserContextProvider(props) {
   const [users, setUsers] = useState(
     JSON.parse(localStorage.getItem('users')) || []
   );
-
   const DeleteUser = (email) => {
     const updatedUsers = users.filter(user => user.email !== email);
     setUsers(updatedUsers);
