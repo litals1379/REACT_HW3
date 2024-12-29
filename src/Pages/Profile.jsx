@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { loadImageFromDB } from "../DB/indexedDB";
 
 export default function Profile({ setIsLoggedIn }) {
   const { state } = useLocation();
@@ -8,14 +7,23 @@ export default function Profile({ setIsLoggedIn }) {
   const userData = state || JSON.parse(sessionStorage.getItem('loggedUser'));
   const [profileImage, setProfileImage] = useState(null);
 
+  const loadImageFromLocalStorage = (email) => {
+    const imageKey = `profileImage_${email}`;
+    const base64Data = localStorage.getItem(imageKey);
+    if (base64Data) {
+      return `data:image/jpeg;base64,${base64Data}`;
+    }
+    return null;
+  };
+
+
+  // Fetch profile image from localStorage
   useEffect(() => {
     if (userData) {
-      loadImageFromDB(userData.email)
-        .then(image => {
-          if (image) {
-            setProfileImage(image);
-          }
-        });
+      const image = loadImageFromLocalStorage(userData.email);
+      if (image) {
+        setProfileImage(image);
+      }
     }
   }, [userData]);
 
@@ -24,15 +32,11 @@ export default function Profile({ setIsLoggedIn }) {
   };
 
   const logoutUser = () => {
-    // Remove user data from sessionStorage
     sessionStorage.removeItem('loggedUser');
-    // Update login state in App component
     setIsLoggedIn(false);
-    // Navigate to login page
     navigate('/', { replace: true });
   };
 
-  // Redirect to login if no user data
   useEffect(() => {
     if (!userData) {
       navigate('/', { replace: true });

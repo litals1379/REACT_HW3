@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
@@ -23,16 +23,25 @@ export default function Register() {
     street: '',
     street_number: '',
     role: 'user',
-    profileImage: null,
+    profileImage: null, // Store the image as a data URL
   });
   const [errors, setErrors] = useState({});
   const [filteredCities, setFilteredCities] = useState([]);
-  const [showPassword, setShowPassword] = useState(false); // Toggle state
+  const [showPassword, setShowPassword] = useState(false); 
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+
     if (name === 'profileImage') {
-      setFormData({ ...formData, profileImage: files[0] });
+      if (files && files[0]) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setFormData({ ...formData, profileImage: reader.result }); 
+        };
+        reader.readAsDataURL(files[0]); 
+      } else {
+        setFormData({ ...formData, profileImage: null }); 
+      }
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -43,14 +52,13 @@ export default function Register() {
     setFormData({ ...formData, city: value });
 
     if (value) {
-      const filtered = cities.filter(city => city.includes(value));
+      const filtered = cities.filter((city) => city.includes(value));
       setFilteredCities(filtered);
     } else {
       setFilteredCities([]);
     }
   };
 
-  console.log(formData);
   const validate = () => {
     const newErrors = {};
     const usernameRegex = /^[a-zA-Z]{1,60}$/;
@@ -59,14 +67,12 @@ export default function Register() {
 
     if (!formData.username) {
       newErrors.username = 'שם משתמש הוא שדה חובה.';
-    }
-    else if (!usernameRegex.test(formData.username)) {
+    } else if (!usernameRegex.test(formData.username)) {
       newErrors.username = 'שם משתמש יכול להכיל רק אותיות (עד 60 תווים).';
     }
     if (!formData.password) {
       newErrors.password = 'סיסמה היא שדה חובה.';
-    }
-    else if (!passwordRegex.test(formData.password)) {
+    } else if (!passwordRegex.test(formData.password)) {
       newErrors.password = 'סיסמה חייבת להכיל 7-12 תווים, כולל אות גדולה, מספר ותו מיוחד.';
     }
     if (formData.password !== formData.confirmPassword) {
@@ -74,20 +80,14 @@ export default function Register() {
     }
     if (!formData.email) {
       newErrors.email = 'אימייל הוא שדה חובה.';
-    }
-    else if (!emailRegex.test(formData.email)) {
+    } else if (!emailRegex.test(formData.email)) {
       newErrors.email = 'כתובת אימייל לא תקינה.';
-    }
-    if (formData.profileImage && !/\.(jpg|jpeg)$/i.test(formData.profileImage.name)) {
-      newErrors.profileImage = 'ניתן להעלות תמונה בפורמט .jpg או .jpeg בלבד.';
     }
     if (!formData.birthDate) {
       newErrors.birthDate = 'תאריך לידה הוא שדה חובה.';
-    }
-    else if (calculateAge(formData.birthDate) < 18) {
+    } else if (calculateAge(formData.birthDate) < 18) {
       newErrors.birthDate = 'גיל חייב להיות לפחות 18.';
-    }
-    else if (calculateAge(formData.birthDate) > 120) {
+    } else if (calculateAge(formData.birthDate) > 120) {
       newErrors.birthDate = 'גיל חייב להיות עד 120.';
     }
 
@@ -105,8 +105,7 @@ export default function Register() {
     }
     if (!formData.street_number) {
       newErrors.street_number = 'מספר רחוב הוא שדה חובה.';
-    }
-    else if (Number(formData.street_number) < 1) {
+    } else if (Number(formData.street_number) < 1) {
       newErrors.street_number = 'מספר רחוב חייב להיות גדול מ-0.';
     }
 
@@ -133,15 +132,28 @@ export default function Register() {
     if (!validate()) {
       return;
     }
-
+  
     const users = JSON.parse(localStorage.getItem('users')) || [];
-
+  
     const existingUser = users.find((user) => user.email === formData.email);
     if (existingUser) {
       alert('מייל זה כבר רשום במערכת!');
       return;
     }
-
+  
+    // Handle image storage (if applicable)
+    if (formData.profileImage) {
+      const base64String = formData.profileImage.split(',')[1]; 
+      const uniqueImageKey = `profileImage_${formData.email}`; // Unique key based on email
+  
+      // Store the base64 string in localStorage with a unique key
+      localStorage.setItem(uniqueImageKey, base64String);
+  
+      // Store the user data with a reference to the unique key
+      formData.profileImage = uniqueImageKey; 
+    }
+  
+    // Add user data to localStorage
     users.push(formData);
     localStorage.setItem('users', JSON.stringify(users));
     alert('נרשמת בהצלחה!');
@@ -299,6 +311,9 @@ export default function Register() {
           className="form-control"
         />
         {errors.profileImage && <div className="text-danger">{errors.profileImage}</div>}
+        {formData.profileImage && (
+          <img src={formData.profileImage} alt="Profile Image" className="img-thumbnail" /> 
+        )}
 
         <button type="button" onClick={registerUser} className="btn btn-primary mt-3">
           הרשמה

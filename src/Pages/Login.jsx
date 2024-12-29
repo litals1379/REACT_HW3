@@ -136,7 +136,7 @@ export default function Login({ setIsLoggedIn }) {
   }, []);
 
   return (
-    <div className="container mt-5" style={{ maxWidth: '500px', direction: 'rtl' }}>
+    <div className="container mt-5" style={{ maxWidth: '700px', direction: 'rtl' }}>
       <h2>כניסה</h2>
       <label>שם משתמש:</label>
       <input type="text" name="userName" onChange={handleChange} placeholder="הזן שם משתמש" className="form-control" />
