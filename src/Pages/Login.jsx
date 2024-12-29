@@ -3,27 +3,69 @@ import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [userDetails, setUserDetails] = useState({ username: '', password: '' });
-
+  const [errors, setErrors] = useState({});
+  const [formData, setFormData] = useState({ userName: '', password: '' });
+  const users = JSON.parse(localStorage.getItem('users'));
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUserDetails({ ...userDetails, [name]: value });
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    const usernameRegex = /^[a-zA-Z0-9!@#$%^&*]+$/;
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{7,12}$/;
+    let isValid = true;
+    
+    if (!formData.userName) {
+      newErrors.userName = 'שם משתמש הוא שדה חובה.';
+      isValid = false;
+    } else if (formData.userName.length > 60) {
+      newErrors.userName = 'שם משתמש חייב להכיל עד 60 תווים';
+      isValid = false;
+    } else if (!usernameRegex.test(formData.userName)) {
+      newErrors.userName = 'שם משתמש חייב להכיל אותיות באנגלית, מספרים ותווים מיוחדים.';
+      isValid = false;
+    }
+    
+     //validate password
+     if (!formData.password) {
+      newErrors.password = 'סיסמה היא שדה חובה.';
+      isValid=false;
+    }
+    else if (formData.password.length <= 7) {
+      newErrors.password = 'סיסמה חייבת להכיל לפחות 7 תווים';
+      isValid=false;
+     
+  }
+  else if (formData.password.length >= 12) {
+    newErrors.password = 'סיסמה חייבת להכיל לכל היותר 12 תווים';
+    isValid=false;
+      
+  }
+    else if (!passwordRegex.test(formData.password)) {
+      newErrors.password = 'סיסמה חייבת להכיל 7-12 תווים, כולל אות גדולה, מספר ותו מיוחד.';
+      isValid=false;
+    }
+    setErrors(newErrors);
+    return isValid;
   };
 
   const loginUser = () => {
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const user = users.find(user => user.username === userDetails.username && user.password === userDetails.password);
-
+    if (!validate()) {
+      return;
+    }
+    const user = users.find(user => user.username === formData.userName && user.password === formData.password);   
     if (user) {
       sessionStorage.setItem('loggedUser', JSON.stringify(user));
       alert("התחברת בהצלחה!");
       navigate('/profile');
     } else {
-      alert("שם משתמש או סיסמה שגויים!");
+      alert("לא קיים משתמש עם שם משתמש וסיסמה זו.");
     }
   };
 
-  const RegisterLink = () =>{
+  const RegisterLink = () => {
     navigate('/register');
   };
 
@@ -31,12 +73,12 @@ export default function Login() {
     <div className="container mt-5" style={{ maxWidth: '500px', direction: 'rtl' }}>
       <h2>כניסה</h2>
       <label>שם משתמש:</label>
-      <input type="text" name="username" onChange={handleChange} placeholder="הזן שם משתמש" className="form-control"/>
-      
+      <input type="text" name="userName" onChange={handleChange} placeholder="הזן שם משתמש" className="form-control" />
+      {errors.userName && <p style={{ color: 'red' }}>{errors.userName}</p>}
       <label>סיסמה:</label>
-      <input type="password" name="password" onChange={handleChange} placeholder="הזן סיסמה (7-12 תווים)" className="form-control"/>
-      
-      <button onClick={loginUser} className="btn btn-primary mt-3">כניסה</button> <br/>
+      <input type="password" name="password" onChange={handleChange} placeholder="הזן סיסמה (7-12 תווים)" className="form-control" />
+      {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
+      <button onClick={loginUser} className="btn btn-primary mt-3">כניסה</button> <br />
       <button onClick={RegisterLink}  >עוד לא נירשמת? הירשם עכשיו</button>
     </div>
   );
