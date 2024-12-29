@@ -11,11 +11,11 @@ import UserContextProvider from './Pages/UserContextProvider';
 function App() {
   return (
     <>
+
         <Link to= "/">כניסה</Link>|
         <Link to= "/register">הרשמה</Link>|
         <Link to= "/profile">פרופיל</Link>|
         <Link to="/admin">מנהל מערכת</Link>
-
         <div className="card">
         <Routes>
             <Route path='/' element = {<Login/>}/>
@@ -23,12 +23,12 @@ function App() {
             <Route path='/profile' element = {<Profile/>}/>
             <Route path="/edit-details" element={<EditDetails />} />
             <Route path="/admin" element={
-            <UserContextProvider>
-              <SystemAdmin />
-            </UserContextProvider>
+            <SystemAdmin />
           } />
         </Routes>
+        
       </div>
+
     </>
   )
 }
