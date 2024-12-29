@@ -1,25 +1,16 @@
-import { useState,useContext } from 'react';
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
-import CitiesData from '../Data/Cities.json';
-import { UserContext } from './UserContextProvider';
+import CitiesData from '../assets/cities.json';
 
 const cities = [];
 CitiesData.map((city) => {
   cities.push(city.name);
 });
 
-
 export default function Register() {
   const navigate = useNavigate();
-  const {addUser} = useContext(UserContext);
-  const [errors, setErrors] = useState({});
-  const [showPassword, setShowPassword] = useState(false); // Toggle state
-  const [filteredCities, setFilteredCities] = useState([]);
-
-  // const [selectedCity, setSelectedCity] = useState(''); // Dropdown state
-
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -31,11 +22,12 @@ export default function Register() {
     city: '',
     street: '',
     street_number: '',
+    role: 'user',
     profileImage: null,
   });
-  
- 
-
+  const [errors, setErrors] = useState({});
+  const [filteredCities, setFilteredCities] = useState([]);
+  const [showPassword, setShowPassword] = useState(false); // Toggle state
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -58,114 +50,68 @@ export default function Register() {
     }
   };
 
-console.log(formData);
-
+  console.log(formData);
   const validate = () => {
     const newErrors = {};
-    const usernameRegex = /^[a-zA-Z0-9!@#$%^&*]+$/;
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{7,12}$/;
+    const usernameRegex = /^[a-zA-Z]{1,60}$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,12}$/;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com$/;
-    let isValid=true;
 
-    //validate user name
     if (!formData.username) {
       newErrors.username = 'שם משתמש הוא שדה חובה.';
-      isValid=false;
-  } else if (formData.username.length > 60) {
-      newErrors.userName = 'שם משתמש חייב להכיל עד 60 תווים';
-      isValid=false;
-  } else if (!usernameRegex.test(formData.username)) {
-    newErrors.username = 'שם משתמש חייב להכיל אותיות באנגלית, מספרים ותווים מיוחדים.';
-    isValid=false;
-  }
-   
-   //validate password
+    }
+    else if (!usernameRegex.test(formData.username)) {
+      newErrors.username = 'שם משתמש יכול להכיל רק אותיות (עד 60 תווים).';
+    }
     if (!formData.password) {
       newErrors.password = 'סיסמה היא שדה חובה.';
-      isValid=false;
     }
-    else if (formData.password.length <= 7) {
-      newErrors.password = 'סיסמה חייבת להכיל לפחות 7 תווים';
-      isValid=false;
-     
-  }
-  else if (formData.password.length >= 12) {
-    newErrors.password = 'סיסמה חייבת להכיל לכל היותר 12 תווים';
-    isValid=false;
-      
-  }
     else if (!passwordRegex.test(formData.password)) {
       newErrors.password = 'סיסמה חייבת להכיל 7-12 תווים, כולל אות גדולה, מספר ותו מיוחד.';
-      isValid=false;
     }
-
-    //validate confirm password
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'סיסמאות אינן תואמות.';
-      isValid=false;
     }
-
-    //validate email
     if (!formData.email) {
       newErrors.email = 'אימייל הוא שדה חובה.';
-      isValid=false;
     }
     else if (!emailRegex.test(formData.email)) {
       newErrors.email = 'כתובת אימייל לא תקינה.';
-      isValid=false;
     }
-
-    //validate profile image
-    if(!formData.profileImage) {
-      newErrors.profileImage = 'תמונת פרופיל היא שדה חובה.';
-      isValid=false;
-    }
-
-    else if (formData.profileImage && !/\.(jpg|jpeg)$/i.test(formData.profileImage.name)) {
+    if (formData.profileImage && !/\.(jpg|jpeg)$/i.test(formData.profileImage.name)) {
       newErrors.profileImage = 'ניתן להעלות תמונה בפורמט .jpg או .jpeg בלבד.';
-      isValid=false;
     }
-
-    //validate birth date
     if (!formData.birthDate) {
       newErrors.birthDate = 'תאריך לידה הוא שדה חובה.';
-      isValid=false;
     }
     else if (calculateAge(formData.birthDate) < 18) {
       newErrors.birthDate = 'גיל חייב להיות לפחות 18.';
-      isValid=false;
     }
     else if (calculateAge(formData.birthDate) > 120) {
       newErrors.birthDate = 'גיל חייב להיות עד 120.';
-      isValid=false;
     }
 
     if (!formData.firstName) {
       newErrors.firstName = 'שם פרטי הוא שדה חובה.';
-      isValid=false;
     }
     if (!formData.lastName) {
       newErrors.lastName = 'שם משפחה הוא שדה חובה.';
-      isValid=false;
     }
     if (!formData.city) {
       newErrors.city = 'עיר היא שדה חובה.';
-      isValid=false;
     }
     if (!formData.street) {
       newErrors.street = 'רחוב הוא שדה חובה.';
-      isValid=false;
     }
     if (!formData.street_number) {
       newErrors.street_number = 'מספר רחוב הוא שדה חובה.';
-      isValid=false;
     }
     else if (Number(formData.street_number) < 1) {
       newErrors.street_number = 'מספר רחוב חייב להיות גדול מ-0.';
-      isValid=false;
     }
+
     setErrors(newErrors);
-    return isValid;
+    return Object.keys(newErrors).length === 0;
   };
 
   const calculateAge = (birthDate) => {
@@ -183,13 +129,21 @@ console.log(formData);
     setShowPassword(!showPassword);
   };
 
-
   const registerUser = () => {
-    console.log("inRegister handle func");
     if (!validate()) {
       return;
     }
-    addUser(formData);
+
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+
+    const existingUser = users.find((user) => user.email === formData.email);
+    if (existingUser) {
+      alert('מייל זה כבר רשום במערכת!');
+      return;
+    }
+
+    users.push(formData);
+    localStorage.setItem('users', JSON.stringify(users));
     alert('נרשמת בהצלחה!');
     navigate('/', { state: formData });
   };

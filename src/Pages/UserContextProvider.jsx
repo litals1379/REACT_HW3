@@ -7,13 +7,6 @@ export default function UserContextProvider(props) {
   const [users, setUsers] = useState(
     JSON.parse(localStorage.getItem('users')) || []
   );
-
-  const addUser = (user) => {
-    console.log('In add User fuync');
-    setUsers([...users, user]);
-    localStorage.setItem('users', JSON.stringify([...users, user]));
-  };
-
   const DeleteUser = (email) => {
     const updatedUsers = users.filter(user => user.email !== email);
     setUsers(updatedUsers);
@@ -29,7 +22,7 @@ export default function UserContextProvider(props) {
   };
 
   return (
-    <UserContext.Provider value={{ users, DeleteUser, EditUser,addUser }}>
+    <UserContext.Provider value={{ users, DeleteUser, EditUser }}>
       {props.children}
     </UserContext.Provider>
   );

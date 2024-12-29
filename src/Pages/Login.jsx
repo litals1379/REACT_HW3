@@ -1,14 +1,38 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export default function Login() {
+export default function Login({ setIsLoggedIn }) {
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({ userName: '', password: '' });
   const users = JSON.parse(localStorage.getItem('users'));
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const addAdminIfNotExists = () => {
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const adminExists = users.some(user => user.username === 'admin');
+
+    if (!adminExists) {
+      const adminUser = {
+        username: 'admin',
+        password: 'ad12343211ad',
+        role: 'admin',
+        email: 'admin@admin.com',
+        firstName: '',
+        lastName: '',
+        birthDate: '',
+        city: '',
+        street: '',
+        street_number: '',
+        profileImage: null,
+      };
+      users.push(adminUser);
+      localStorage.setItem('users', JSON.stringify(users));
+    }
   };
 
   const validate = () => {
@@ -33,41 +57,83 @@ export default function Login() {
       newErrors.password = 'סיסמה היא שדה חובה.';
       isValid=false;
     }
-    else if (formData.password.length <= 7) {
+    else if (formData.password.length < 7) {
       newErrors.password = 'סיסמה חייבת להכיל לפחות 7 תווים';
       isValid=false;
      
   }
-  else if (formData.password.length >= 12) {
+  else if (formData.password.length > 12) {
     newErrors.password = 'סיסמה חייבת להכיל לכל היותר 12 תווים';
     isValid=false;
       
   }
-    else if (!passwordRegex.test(formData.password)) {
-      newErrors.password = 'סיסמה חייבת להכיל 7-12 תווים, כולל אות גדולה, מספר ותו מיוחד.';
-      isValid=false;
-    }
+    // else if (!passwordRegex.test(formData.password)) {
+    //   newErrors.password = 'סיסמה חייבת להכיל 7-12 תווים, כולל אות גדולה, מספר ותו מיוחד.';
+    //   isValid=false;
+    // }
     setErrors(newErrors);
     return isValid;
   };
+
+ 
 
   const loginUser = () => {
     if (!validate()) {
       return;
     }
-    const user = users.find(user => user.username === formData.userName && user.password === formData.password);   
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(user => 
+      user.username === formData.userName && 
+      user.password === formData.password
+    );
+
     if (user) {
       sessionStorage.setItem('loggedUser', JSON.stringify(user));
+      // Update the login state in parent component
+      setIsLoggedIn(true);
       alert("התחברת בהצלחה!");
-      navigate('/profile');
+
+      if (user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/profile');
+      }
     } else {
-      alert("לא קיים משתמש עם שם משתמש וסיסמה זו.");
+      alert("שם משתמש או סיסמה שגויים!");
     }
   };
+
+
+  // const loginUser = () => {
+  //   const users = JSON.parse(localStorage.getItem('users')) || [];
+  //   const user = users.find(user => 
+  //     user.username === userDetails.username && 
+  //     user.password === userDetails.password
+  //   );
+
+  //   if (user) {
+  //     sessionStorage.setItem('loggedUser', JSON.stringify(user));
+  //     // Update the login state in parent component
+  //     setIsLoggedIn(true);
+  //     alert("התחברת בהצלחה!");
+
+  //     if (user.role === 'admin') {
+  //       navigate('/admin');
+  //     } else {
+  //       navigate('/profile');
+  //     }
+  //   } else {
+  //     alert("שם משתמש או סיסמה שגויים!");
+  //   }
+  // };
 
   const RegisterLink = () => {
     navigate('/register');
   };
+
+  useEffect(() => {
+    addAdminIfNotExists();
+  }, []);
 
   return (
     <div className="container mt-5" style={{ maxWidth: '500px', direction: 'rtl' }}>
