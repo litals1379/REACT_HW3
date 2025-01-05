@@ -54,16 +54,18 @@ export default function Profile({ setIsLoggedIn }) {
 
   const formatDate = (dateString) => {
     if (!dateString) {
-        return 'לא צויין תאריך'; 
+      return 'לא צויין תאריך';
     }
-
-    const parts = dateString.split('-');
-    if (parts.length === 3) {
-        return `${parts[2]}-${parts[1]}-${parts[0]}`;
-    } else {
-        return dateString; 
+  
+    try {
+      const date = new Date(dateString);
+      const options = { day: '2-digit', month: 'long', year: 'numeric' };
+      return date.toLocaleDateString('he-IL', options); // שימוש ב-he-IL עבור עברית
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return dateString; // החזרה למחרוזת המקורית במקרה של שגיאה
     }
-};
+  };
 
   return (
     <div className="container mt-5 d-flex justify-content-center">

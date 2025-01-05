@@ -67,3 +67,22 @@ button {
 .profile-info-item i {
   margin-left: 0.5rem; /* מרווח בין הסמל לטקסט */
 }
+
+.link-button {
+  color: blue;
+  text-decoration: none;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+}
+
+.link-button:hover {
+  color: darkblue;
+  text-decoration: underline; /* הוספנו את זה */
+}
+
+.link-button:active {
+  color: #0056b3;
+}

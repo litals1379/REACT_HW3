@@ -8,17 +8,19 @@ export default function SystemAdmin() {
   const [updatedUserData, setUpdatedUserData] = useState({
     firstName: '',
     lastName: '',
+    userName: '',
     birthDate: '',
-    address: '',
-    email: ''
+    street: '', 
+    street_number: '',
+    city: '',
+    email: '',
   });
-  const [avatars, setAvatars] = useState({}); // Store avatars keyed by email
+  const [avatars, setAvatars] = useState({});
 
-  // Load avatars from local storage
   useEffect(() => {
     const loadAvatars = () => {
       const avatarsMap = {};
-      users.forEach(user => {
+      users.forEach((user) => {
         const image = loadImageFromLocalStorage(user.email);
         if (image) {
           avatarsMap[user.email] = image;
@@ -32,17 +34,23 @@ export default function SystemAdmin() {
 
   const loadImageFromLocalStorage = (email) => {
     const imageData = localStorage.getItem(`profileImage_${email}`);
-    return imageData ? `data:image/jpeg;base64,${imageData}` : null;
+    return imageData ? `data:image/jpeg;base64,${imageData}` : '/default-avatar.png'; // החזרת תמונה ברירת מחדל אם אין תמונה
   };
 
   const handleEditClick = (user) => {
     setEditingUser(user);
+    const [street, street_numberAndCity] = user.address.split(',');
+    const [street_number, city] = street_numberAndCity.trim().split(' ');
+
     setUpdatedUserData({
       firstName: user.firstName,
       lastName: user.lastName,
+      userName: user.userName,
       birthDate: user.birthDate,
-      address: `${user.street} ${user.street_number}, ${user.city}`,
-      email: user.email
+      street: street.trim(),
+      street_number: street_number.trim(),
+      city: city.trim(),
+      email: user.email,
     });
   };
 
@@ -56,133 +64,99 @@ export default function SystemAdmin() {
     setEditingUser(null);
   };
 
-  return (
-    <div className="container mt-5" style={{ maxWidth: '700px', direction: 'rtl' }}>
-      <table className="table table-striped mt-3 text-center">
-        <thead>
-          <tr>
-            <th>תמונה</th>
-            <th>שם מלא</th>
-            <th>תאריך לידה</th>
-            <th>כתובת</th>
-            <th>דואר אלקטרוני</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.length > 0 ? (
-            users.map((user, index) => (
-              <tr key={index}>
-                <td>
-                  <img
-                    src={avatars[user.email] || '/default-avatar.png'}
-                    alt="Avatar"
-                    className="rounded-circle"
-                    width="40"
-                    height="40"
-                  />
-                </td>
-                <td>{`${user.firstName} ${user.lastName}`}</td>
-                <td>{user.birthDate}</td>
-                <td>{`${user.street} ${user.street_number}, ${user.city}`}</td>
-                <td>
-                  <a href={`mailto:${user.email}`}>{user.email}</a>
-                </td>
-                <td>
-                  <button
-                    onClick={() => DeleteUser(user.email)}
-                    className="btn btn-danger mx-1"
-                  >
-                    <i className="fa fa-trash"></i>
-                  </button>
-                  <button
-                    onClick={() => handleEditClick(user)}
-                    className="btn btn-primary mx-1"
-                  >
-                    <i className="fa fa-edit"></i>
-                  </button>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="6">לא נמצאו משתמשים</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+  const closeModal = () => {
+    setEditingUser(null);
+  };
 
-      {/* Edit user modal */}
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return 'לא צויין תאריך';
+    }
+
+    try {
+      const date = new Date(dateString);
+      const options = { day: '2-digit', month: 'long', year: 'numeric' };
+      return date.toLocaleDateString('he-IL', options);
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return dateString;
+    }
+  };
+
+
+  return (
+    <div className="container mt-5" style={{ maxWidth: '900px', direction: 'rtl' }}> 
+      <div className="card shadow-lg p-4">
+        <h3 className="text-center">משתמשים רשומים</h3>
+        <table className="table table-striped mt-3 text-center">
+          <thead>
+            <tr>
+              <th></th>
+              <th>שם משתמש</th>
+              <th>שם מלא</th>
+              <th>תאריך לידה</th>
+              <th>כתובת</th>
+              <th>דואר אלקטרוני</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.length > 0 ? (
+              users.map((user, index) => (
+                <tr key={index}>
+                  <td>
+                    <img
+                      src={avatars[user.email]}
+                      alt="Avatar"
+                      className="rounded-circle"
+                      width="40"
+                      height="40"
+                    />
+                  </td>
+                  <td>{user.userName}</td>
+                  <td>{`${user.firstName} ${user.lastName}`}</td>
+                  <td>{formatDate(user.birthDate)}</td>
+                  <td>{`${user.street} ${user.street_number}, ${user.city}`}</td>
+                  <td><a href={`mailto:${user.email}`}>{user.email}</a></td>
+                  <td>
+                    <div className="d-flex justify-content-center">
+                      <button onClick={() => DeleteUser(user.email)} className="btn btn-danger btn-sm mx-1">
+                        <i className="fa fa-trash"></i>
+                      </button>
+                      <button onClick={() => handleEditClick(user)} className="btn btn-primary btn-sm mx-1">
+                        <i className="fa fa-edit"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr><td colSpan="7">לא נמצאו משתמשים</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
       {editingUser && (
-        <div className="modal show" style={{ display: 'block' }} tabIndex="-1">
-          <div className="modal-dialog">
+        <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1" role="dialog">
+          <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">עריכת פרטי המשתמש</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setEditingUser(null)}
-                ></button>
+                <button type="button" className="btn-close" onClick={closeModal}></button>
               </div>
               <div className="modal-body">
-                <label>שם פרטי</label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={updatedUserData.firstName}
-                  onChange={handleInputChange}
-                  className="form-control"
-                />
-                <label>שם משפחה</label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={updatedUserData.lastName}
-                  onChange={handleInputChange}
-                  className="form-control"
-                />
-                <label>תאריך לידה</label>
-                <input
-                  type="date"
-                  name="birthDate"
-                  value={updatedUserData.birthDate}
-                  onChange={handleInputChange}
-                  className="form-control"
-                />
-                <label>כתובת</label>
-                <input
-                  type="text"
-                  name="address"
-                  value={updatedUserData.address}
-                  onChange={handleInputChange}
-                  className="form-control"
-                />
-                <label>אימייל</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={updatedUserData.email}
-                  onChange={handleInputChange}
-                  className="form-control"
-                  disabled
-                />
+                <div className="mb-3"><label className="form-label">שם פרטי</label><input type="text" name="firstName" value={updatedUserData.firstName} onChange={handleInputChange} className="form-control" /></div>
+                <div className="mb-3"><label className="form-label">שם משפחה</label><input type="text" name="lastName" value={updatedUserData.lastName} onChange={handleInputChange} className="form-control" /></div>
+                <div className="mb-3"><label className="form-label">תאריך לידה</label><input type="date" name="birthDate" value={updatedUserData.birthDate} onChange={handleInputChange} className="form-control" /></div>
+                <div className="mb-3"><label className="form-label">רחוב</label><input type="text" name="street" value={updatedUserData.street} onChange={handleInputChange} className="form-control" /></div>
+                <div className="mb-3"><label className="form-label">מספר בית</label><input type="text" name="street_number" value={updatedUserData.street_number} onChange={handleInputChange} className="form-control" /></div>
+                <div className="mb-3"><label className="form-label">עיר</label><input type="text" name="city" value={updatedUserData.city} onChange={handleInputChange} className="form-control" /></div>
+                <div className="mb-3"><label className="form-label">אימייל</label><input type="email" name="email" value={updatedUserData.email} onChange={handleInputChange} className="form-control" disabled /></div>
               </div>
               <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={() => setEditingUser(null)}
-                >
-                  סגור
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={handleSaveChanges}
-                >
-                  שמור שינויים
-                </button>
+                <button type="button" className="btn btn-secondary" onClick={closeModal}>סגור</button>
+                <button type="button" className="btn btn-primary" onClick={handleSaveChanges}>שמור שינויים</button>
               </div>
             </div>
           </div>

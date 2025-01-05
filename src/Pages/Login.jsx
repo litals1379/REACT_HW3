@@ -118,7 +118,7 @@ export default function Login({ setIsLoggedIn }) {
       <input type="password" name="password" onChange={handleChange} placeholder="הזן סיסמה (7-12 תווים)" className="form-control" />
       {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
       <button onClick={loginUser} className="btn btn-primary mt-3">כניסה</button> <br />
-      <button onClick={RegisterLink} className="btn btn" style={{ textDecoration: 'underline' }}>
+      <button onClick={RegisterLink} className="link-button">
         עוד לא נרשמת? הירשם עכשיו
       </button>
     </div>
