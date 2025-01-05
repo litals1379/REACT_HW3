@@ -31,14 +31,14 @@ function App() {
     <>
       {!isLoggedIn && (
         <div>
-          <Link to="/">כניסה</Link> |
+          <Link to="/">כניסה</Link>
           <Link to="/register">הרשמה</Link>
         </div>
       )}
 
       {isLoggedIn && (
         <div>
-          <Link to="/profile">פרופיל</Link> |
+          <Link to="/profile">פרופיל</Link>
           {JSON.parse(sessionStorage.getItem('loggedUser'))?.role === "admin" && 
             <Link to="/admin">מנהל מערכת</Link>
           }

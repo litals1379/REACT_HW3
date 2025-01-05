@@ -102,34 +102,36 @@ export default function SystemAdmin() {
           </thead>
           <tbody>
             {users.length > 0 ? (
-              users.map((user, index) => (
-                <tr key={index}>
-                  <td>
-                    <img
-                      src={avatars[user.email]}
-                      alt="Avatar"
-                      className="rounded-circle"
-                      width="40"
-                      height="40"
-                    />
-                  </td>
-                  <td>{user.userName}</td>
-                  <td>{`${user.firstName} ${user.lastName}`}</td>
-                  <td>{formatDate(user.birthDate)}</td>
-                  <td>{`${user.street} ${user.street_number}, ${user.city}`}</td>
-                  <td><a href={`mailto:${user.email}`}>{user.email}</a></td>
-                  <td>
-                    <div className="d-flex justify-content-center">
-                      <button onClick={() => DeleteUser(user.email)} className="btn btn-danger btn-sm mx-1">
-                        <i className="fa fa-trash"></i>
-                      </button>
-                      <button onClick={() => handleEditClick(user)} className="btn btn-primary btn-sm mx-1">
-                        <i className="fa fa-edit"></i>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
+              users
+                .filter((user) => user.username?.toLowerCase() !== "admin") // Ensure userName exists and exclude "admin"
+                .map((user, index) => (
+                  <tr key={index}>
+                    <td>
+                      <img
+                        src={avatars[user.email]}
+                        alt="Avatar"
+                        className="rounded-circle"
+                        width="40"
+                        height="40"
+                      />
+                    </td>
+                    <td>{user.username}</td>
+                    <td>{`${user.firstName} ${user.lastName}`}</td>
+                    <td>{formatDate(user.birthDate)}</td>
+                    <td>{`${user.street} ${user.street_number}, ${user.city}`}</td>
+                    <td><a href={`mailto:${user.email}`}>{user.email}</a></td>
+                    <td>
+                      <div className="d-flex justify-content-center">
+                        <button onClick={() => DeleteUser(user.email)} className="btn btn-danger btn-sm mx-1">
+                          <i className="fa fa-trash"></i>
+                        </button>
+                        <button onClick={() => handleEditClick(user)} className="btn btn-primary btn-sm mx-1">
+                          <i className="fa fa-edit"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
             ) : (
               <tr><td colSpan="7">לא נמצאו משתמשים</td></tr>
             )}

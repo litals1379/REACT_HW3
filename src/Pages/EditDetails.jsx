@@ -30,7 +30,7 @@ export default function EditDetails() {
     return (
         <div className="container mt-5" style={{ maxWidth: '500px' }}>
             <h2>עריכת פרטי משתמש</h2>
-            <label>שם משתמש:</label>
+            <label>:שם משתמש</label>
             <input 
                 type="text" 
                 name="username" 
@@ -39,7 +39,7 @@ export default function EditDetails() {
                 className="form-control" 
             />
 
-            <label>שם פרטי:</label>
+            <label>:שם פרטי</label>
             <input 
                 type="text" 
                 name="firstName" 
@@ -48,7 +48,7 @@ export default function EditDetails() {
                 className="form-control" 
             />
 
-            <label>שם משפחה:</label>
+            <label>:שם משפחה</label>
             <input 
                 type="text" 
                 name="lastName" 
@@ -57,7 +57,7 @@ export default function EditDetails() {
                 className="form-control" 
             />
 
-            <label>אימייל:</label>
+            <label>:אימייל</label>
             <input 
                 type="email" 
                 name="email" 
