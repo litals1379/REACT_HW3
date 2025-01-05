@@ -87,7 +87,7 @@ export default function Profile({ setIsLoggedIn }) {
                     />
                 ) : (
                     <img
-                        src='/images/default-avatar.png'
+                        src='https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-PNG-Clipart.png'
                         alt="תמונת ברירת מחדל"
                         style={{
                             width: '120px',

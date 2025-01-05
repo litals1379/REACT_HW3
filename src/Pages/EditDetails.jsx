@@ -39,6 +39,15 @@ export default function EditDetails() {
                 className="form-control" 
             />
 
+            <label>:סיסמא</label>
+            <input 
+                type="text" 
+                name="password" 
+                value={updatedUserData.password} 
+                onChange={handleChange} 
+                className="form-control" 
+            />
+
             <label>:שם פרטי</label>
             <input 
                 type="text" 
@@ -53,6 +62,42 @@ export default function EditDetails() {
                 type="text" 
                 name="lastName" 
                 value={updatedUserData.lastName} 
+                onChange={handleChange} 
+                className="form-control" 
+            />
+
+            <label>:תאריך לידה</label>
+            <input 
+                type="date" 
+                name="birthDate" 
+                value={updatedUserData.birthDate} 
+                onChange={handleChange} 
+                className="form-control" 
+            />
+
+            <label>:עיר</label>
+            <input 
+                type="text" 
+                name="city" 
+                value={updatedUserData.city} 
+                onChange={handleChange} 
+                className="form-control" 
+            />
+
+            <label>:רחוב</label>
+            <input 
+                type="text" 
+                name="street" 
+                value={updatedUserData.street} 
+                onChange={handleChange} 
+                className="form-control" 
+            />
+
+            <label>:מספר</label>
+            <input 
+                type="text" 
+                name="street_number" 
+                value={updatedUserData.street_number} 
                 onChange={handleChange} 
                 className="form-control" 
             />

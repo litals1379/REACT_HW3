@@ -115,9 +115,9 @@ export default function Register() {
         newErrors.street = 'רחוב חייב להיות בעברית';
     }
     if (!formData.street_number) {
-      newErrors.street_number = 'מספר רחוב הוא שדה חובה.';
+      newErrors.street_number = 'מספר בית הוא שדה חובה.';
     } else if (Number(formData.street_number) < 1) {
-      newErrors.street_number = 'מספר רחוב חייב להיות גדול מ-0.';
+      newErrors.street_number = 'מספר בית חייב להיות גדול מ-0.';
     }
     if (!formData.profileImage) {
       newErrors.profileImage = 'תמונת פרופיל היא שדה חובה.';
@@ -168,21 +168,6 @@ export default function Register() {
       // Store the user data with a reference to the unique key
       formData.profileImage = uniqueImageKey; 
     }
-
-    // if (formData.profileImage) {
-    //   const base64String = formData.profileImage.split(',')[1];
-    //   const fileType = formData.profileImage.split(',')[0];
-    
-    //   if (fileType.includes('image/jpeg') || fileType.includes('image/jpg')) {
-    //     const uniqueImageKey = `profileImage_${formData.email}`;
-    
-    //     localStorage.setItem(uniqueImageKey, base64String);
-    
-    //     formData.profileImage = uniqueImageKey;
-    //   } else {
-        
-    //   }
-    // }
   
     // Add user data to localStorage
     users.push(formData);
@@ -322,13 +307,13 @@ export default function Register() {
         />
         {errors.street && <div className="text-danger">{errors.street}</div>}
 
-        <label>מספר רחוב:</label>
+        <label>מספר בית:</label>
         <input
           type="number"
           name="street_number"
           value={formData.street_number}
           onChange={handleChange}
-          placeholder="הזן מספר רחוב"
+          placeholder="הזן מספר בית"
           className="form-control"
         />
         {errors.street_number && <div className="text-danger">{errors.street_number}</div>}
