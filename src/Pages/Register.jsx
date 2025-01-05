@@ -62,10 +62,11 @@ export default function Register() {
 
   const validate = () => {
     const newErrors = {};
-    const usernameRegex = /^[a-zA-Z]{1,60}$/;
+    const usernameRegex = /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]{1,60}$/;
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{7,12}$/;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com$/;
     const urlRegex = /^(https?:\/\/)([a-zA-Z0-9.-]+)(\.[a-zA-Z]{2,})(:[0-9]{1,5})?(\/[^\s]*)?$/;
+    const streetRegex = /^[\u0590-\u05FF\s]+$/;
 
     if (!formData.username) {
       newErrors.username = 'שם משתמש הוא שדה חובה.';
@@ -110,12 +111,20 @@ export default function Register() {
     }
     if (!formData.street) {
       newErrors.street = 'רחוב הוא שדה חובה.';
+    } else if(!streetRegex.test(formData.street)){
+        newErrors.street = 'רחוב חייב להיות בעברית';
     }
     if (!formData.street_number) {
       newErrors.street_number = 'מספר רחוב הוא שדה חובה.';
     } else if (Number(formData.street_number) < 1) {
       newErrors.street_number = 'מספר רחוב חייב להיות גדול מ-0.';
     }
+    if (!formData.profileImage) {
+      newErrors.profileImage = 'תמונת פרופיל היא שדה חובה.';
+    } else if (!/^data:image\/jpe?g;base64,/.test(formData.profileImage)) {
+      newErrors.profileImage =  'תמונה חייבת להיות מסוג - .jpg או .jpeg!';
+    }
+
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -149,7 +158,6 @@ export default function Register() {
       return;
     }
   
-    // Handle image storage (if applicable)
     if (formData.profileImage) {
       const base64String = formData.profileImage.split(',')[1]; 
       const uniqueImageKey = `profileImage_${formData.email}`; // Unique key based on email
@@ -160,6 +168,21 @@ export default function Register() {
       // Store the user data with a reference to the unique key
       formData.profileImage = uniqueImageKey; 
     }
+
+    // if (formData.profileImage) {
+    //   const base64String = formData.profileImage.split(',')[1];
+    //   const fileType = formData.profileImage.split(',')[0];
+    
+    //   if (fileType.includes('image/jpeg') || fileType.includes('image/jpg')) {
+    //     const uniqueImageKey = `profileImage_${formData.email}`;
+    
+    //     localStorage.setItem(uniqueImageKey, base64String);
+    
+    //     formData.profileImage = uniqueImageKey;
+    //   } else {
+        
+    //   }
+    // }
   
     // Add user data to localStorage
     users.push(formData);
@@ -288,7 +311,6 @@ export default function Register() {
         </ul>
       )}
         {errors.city && <div className="text-danger">{errors.city}</div>}
-
         <label>רחוב:</label>
         <input
           type="text"
@@ -314,6 +336,7 @@ export default function Register() {
         <label>תמונת פרופיל:</label>
         <input
           type="file"
+          accept=".jpg,.jpeg"
           name="profileImage"
           onChange={handleChange}
           className="form-control"
@@ -330,9 +353,7 @@ export default function Register() {
             value={formData.favorite_game}
             onChange={handleChange}
             placeholder='הזן משחק אהוב'
-            // readOnly
             className="form-control mt-2"
-            // style={{ maxWidth: '400px' }}
           />
           {errors.favorite_game && <div className="text-danger">{errors.favorite_game}</div>}
           

@@ -119,7 +119,7 @@ export default function Login({ setIsLoggedIn }) {
       {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
       <button onClick={loginUser} className="btn btn-primary mt-3">כניסה</button> <br />
       <button onClick={RegisterLink} className="link-button">
-        עוד לא נרשמת? הירשם עכשיו
+        עוד לא נרשמת? הירשם עכשיו!
       </button>
     </div>
   );
