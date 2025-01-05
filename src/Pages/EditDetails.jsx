@@ -9,9 +9,30 @@ export default function EditDetails() {
     const [updatedUserData, setUpdatedUserData] = useState(userData);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setUpdatedUserData({ ...updatedUserData, [name]: value });
-    };
+        const { name, value, files } = e.target;
+    
+        if (name === 'profileImage') {
+          if (files && files[0]) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setUpdatedUserData({ ...userData, profileImage: reader.result });
+                const base64String = userData.profileImage.split(',')[1]; 
+                const uniqueImageKey = `profileImage_${userData.email}`; // Unique key based on email
+            
+                // Store the base64 string in localStorage with a unique key
+                localStorage.setItem(uniqueImageKey, base64String);
+            
+                // Store the user data with a reference to the unique key
+                userData.profileImage = uniqueImageKey; 
+            };
+            reader.readAsDataURL(files[0]); 
+          } else {
+            setUpdatedUserData({ ...userData, profileImage: null }); 
+          }
+        } else {
+            setUpdatedUserData({ ...userData, [name]: value });
+        }
+      };
 
     const edit = () => {
         const users = JSON.parse(localStorage.getItem('users')) || [];
@@ -100,6 +121,15 @@ export default function EditDetails() {
                 value={updatedUserData.street_number} 
                 onChange={handleChange} 
                 className="form-control" 
+            />
+
+            <label>תמונת פרופיל:</label>
+            <input
+            type="file"
+            accept=".jpg,.jpeg"
+            name="profileImage"
+            onChange={handleChange}
+            className="form-control"
             />
 
             <label>:אימייל</label>
