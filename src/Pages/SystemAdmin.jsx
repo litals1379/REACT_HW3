@@ -34,7 +34,7 @@ export default function SystemAdmin() {
 
   const loadImageFromLocalStorage = (email) => {
     const imageData = localStorage.getItem(`profileImage_${email}`);
-    return imageData ? `data:image/jpeg;base64,${imageData}` : '/default-avatar.png'; // החזרת תמונה ברירת מחדל אם אין תמונה
+    return imageData ? `data:image/jpeg;base64,${imageData}` : '/images/default-avatar.png'; // החזרת תמונה ברירת מחדל אם אין תמונה
   };
 
   const handleEditClick = (user) => {
