@@ -132,6 +132,16 @@ export default function EditDetails() {
             className="form-control"
             />
 
+            <label className="mt-3">קישור למשחק אונליין אהוב:</label>
+            <input
+                type="url"
+                name="favorite_game"
+                value={updatedUserData.favorite_game}
+                onChange={handleChange}
+                placeholder='הזן משחק אהוב'
+                className="form-control"
+            />
+
             <label>:אימייל</label>
             <input 
                 type="email" 
