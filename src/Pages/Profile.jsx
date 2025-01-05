@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEnvelope, faMapMarker, faCakeCandles } from '@fortawesome/free-solid-svg-icons'; // הוספנו את faCakeCandles
 
 export default function Profile({ setIsLoggedIn }) {
   const { state } = useLocation();
@@ -60,10 +62,10 @@ export default function Profile({ setIsLoggedIn }) {
     try {
       const date = new Date(dateString);
       const options = { day: '2-digit', month: 'long', year: 'numeric' };
-      return date.toLocaleDateString('he-IL', options); // שימוש ב-he-IL עבור עברית
+      return date.toLocaleDateString('he-IL', options); 
     } catch (error) {
       console.error("Error formatting date:", error);
-      return dateString; // החזרה למחרוזת המקורית במקרה של שגיאה
+      return dateString; 
     }
   };
 
@@ -85,7 +87,7 @@ export default function Profile({ setIsLoggedIn }) {
                     />
                 ) : (
                     <img
-                        src='/defaultImageUrl.jpg'
+                        src='/images/default-avatar.png'
                         alt="תמונת ברירת מחדל"
                         style={{
                             width: '120px',
@@ -105,8 +107,9 @@ export default function Profile({ setIsLoggedIn }) {
                         {(userData.street + " " + userData.street_number + " ," + userData.city) || 'לא צוינה כתובת'}
                     </p>
                     <p className="profile-info-item">
-                       <i className="fa fa-calendar me-2"></i>{formatDate(userData.birthDate)} 
-                    </p>
+                        <i className="fa fa-cake-candles me-2"></i> {formatDate(userData.birthDate)}
+                    </p> 
+                    
                 </div>
                 <div className="d-flex justify-content-center mt-4">
                     <button onClick={editDetails} className="btn btn-secondary me-2">
